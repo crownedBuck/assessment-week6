@@ -2,6 +2,8 @@ const express = require("express");
 const bots = require("./src/botsData");
 const shuffle = require("./src/shuffle");
 
+console.log("server began running")
+
 const playerRecord = {
   wins: 0,
   losses: 0,
