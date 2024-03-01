@@ -1,0 +1,2 @@
+// Trello information can be found at this address for part 2: https://trello.com/invite/b/TkS76ZQ0/ATTIb72f15367a7f74c5e444b7c2dc10e5fd1CD1A9BA/assessment-week6
+// Was unsure how to PDF it, might take photos after done with the rest to make sure it is seen
