@@ -12,6 +12,16 @@ app.use(express.static(`${__dirname}/public`))
 
 app.use(express.json());
 
+var Rollbar = require('rollbar')
+var rollbar = new Rollbar({
+  accessToken: '73e36f9d84d04be2972d1e1ab77dce55',
+  captureUncaught: true,
+  captureUnhandledRejections: true,
+})
+
+// record a generic message and send it to Rollbar
+rollbar.log('Hello world!')
+
 // Add up the total health of all the robots
 const calculateTotalHealth = (robots) =>
   robots.reduce((total, { health }) => total + health, 0);
@@ -31,11 +41,7 @@ const calculateHealthAfterAttack = ({ playerDuo, compDuo }) => {
   const playerAttack = calculateTotalAttack(playerDuo);
   const compHealth = calculateTotalHealth(compDuo);
 
-  // console.log(`compHealth: ${compHealth}`)
-  // console.log(`playerHealth: ${playerHealth}`)
-
-  // console.log(`compHealth after Attack: ${compHealth - playerAttack}`)
-  // console.log(`playerHealth after Attack: ${playerHealth - compAttack}`)
+  rollbar.log("Damage and player's health after is calculated")
 
   return {
     compHealth: compHealth - playerAttack,
@@ -45,9 +51,11 @@ const calculateHealthAfterAttack = ({ playerDuo, compDuo }) => {
 
 app.get("/api/robots", (req, res) => {
   try {
+    rollbar.log("recieved all bots from .get")
     res.status(200).send(botsArr);
   } catch (error) {
     console.error("ERROR GETTING BOTS", error);
+    rollbar.error("Cannot get all bots from /api/robots")
     res.sendStatus(400);
   }
 });
@@ -55,9 +63,11 @@ app.get("/api/robots", (req, res) => {
 app.get("/api/robots/shuffled", (req, res) => {
   try {
     let shuffled = shuffle(bots);
-    console.log(shuffled)
+    // console.log(shuffled)
+    rollbar.log("bots are shuffled")
     res.status(200).send(shuffled);
   } catch (error) {
+    rollbar.error("bots are not shuffled, something went wrong when connecting to /api/robots/shuffled")
     console.error("ERROR GETTING SHUFFLED BOTS", error);
     res.sendStatus(400);
   }
@@ -66,6 +76,7 @@ app.get("/api/robots/shuffled", (req, res) => {
 app.post("/api/duel", (req, res) => {
   try {
     const { compDuo, playerDuo } = req.body;
+    rollbar.log("duel has begun!")
 
     const { compHealth, playerHealth } = calculateHealthAfterAttack({
       compDuo,
@@ -82,14 +93,17 @@ app.post("/api/duel", (req, res) => {
     }
   } catch (error) {
     console.log("ERROR DUELING", error);
+    console.critical('Player cannot duel!')
     res.sendStatus(400);
   }
 });
 
 app.get("/api/player", (req, res) => {
   try {
+    rollbar.log("getting player record")
     res.status(200).send(playerRecord);
   } catch (error) {
+    rollbar.error("cannot get player record from /api/player")
     console.log("ERROR GETTING PLAYER STATS", error);
     res.sendStatus(400);
   }
