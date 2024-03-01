@@ -23,7 +23,7 @@ chooseHeader.classList.add("hide");
 yourDuoHeader.classList.add("hide");
 compDuoHeader.classList.add("hide");
 
-
+console.log("index.js tried to run")
 
 const makeRobotChoiceCard = (bot) => {
   return `
